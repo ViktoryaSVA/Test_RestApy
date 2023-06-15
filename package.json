@@ -1,0 +1,27 @@
+{
+  "name": "test_api_nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ViktoryaSVA/Test_RestApy.git"
+  },
+  "author": "SVA",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.1.4",
+    "http": "^0.0.1-security",
+    "pg": "^8.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "@types/pg": "^8.10.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  }
+}
