@@ -4,21 +4,28 @@ import { pool } from "../connectDb";
 export async function register(body: User): Promise<Record<string, any>> {
     try {
         const client = await pool.connect();
-        const result = await client.query(
-            'INSERT INTO users (name, password, salary, currency, department, sub_department, on_contract) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-            [
-                body.name,
-                body.password,
-                body.salary,
-                body.currency,
-                body.department,
-                body.sub_department,
-                body.on_contract
-            ]
-        );
+
+        const checkQuery = 'SELECT * FROM users WHERE name = $1';
+        const checkResult = await client.query(checkQuery, [body.name]);
+        if (checkResult.rows.length > 0) {
+            client.release();
+            const existingUser = checkResult.rows[0];
+            return { success: false, message: 'Користувач з таким ім\'ям вже існує', user: existingUser };
+        }
+
+        const insertQuery = 'INSERT INTO users (name, password, salary, currency, department, sub_department, on_contract) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+        const insertResult = await client.query(insertQuery, [
+            body.name,
+            body.password,
+            body.salary,
+            body.currency,
+            body.department,
+            body.sub_department,
+            body.on_contract
+        ]);
         client.release();
 
-        const newUser = result.rows[0];
+        const newUser = insertResult.rows[0];
         return { success: true, message: 'Користувач успішно зареєстрований', user: newUser };
     } catch (error: any) {
         return { success: false, message: 'Помилка реєстрації користувача', error: error.message };
